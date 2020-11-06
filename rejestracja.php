@@ -46,7 +46,19 @@
 		{
 			$wszystko_OK=false;
 			$_SESSION['e_reg']="Potwierdź akceptację regulaminu!";
-		}				
+		}	
+		
+		$sekret = "6LePwd8ZAAAAAHC7q6CXRvY0oeGg2X1XxH0Gz4hW";
+		
+		$sprawdz = file_get_contents('https://www.google.com/recaptcha/api/siteverify?secret='.$sekret.'&response='.$_POST['g-recaptcha-response']);
+		
+		$odpowiedz = json_decode($sprawdz);
+		
+		if ($odpowiedz->success==false)
+		{
+			$wszystko_OK=false;
+			$_SESSION['e_bot']="Potwierdź, że nie jesteś botem!";
+		}		
 		
 		
 		require_once "connect.php";
@@ -126,6 +138,7 @@
 		color: red;
 	}
 	</style>
+	<script src='https://www.google.com/recaptcha/api.js'></script>
 </head>
 <body>
 	<div id="container">
@@ -155,7 +168,17 @@
 						echo '<div class="error">'.$_SESSION['e_reg'].'</div>';
 						unset($_SESSION['e_reg']);
 					}
+				?>
+				<div class="g-recaptcha" data-sitekey="6LePwd8ZAAAAAPQ3YIg91xz5-Rtl80j6MY3lUNDX"></div>
+				<?php
+					if (isset($_SESSION['e_bot']))
+					{
+						echo '<div class="error">'.$_SESSION['e_bot'].'</div>';
+						unset($_SESSION['e_bot']);
+					}
 				?>	
+				
+				<br />	
 				<input type = "submit" value = "zarejestruj się"/>		
 			</form>
 
